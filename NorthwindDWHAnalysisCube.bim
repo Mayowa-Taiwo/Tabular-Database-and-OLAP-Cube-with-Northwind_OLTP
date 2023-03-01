@@ -1,0 +1,628 @@
+{
+  "name": "SemanticModel",
+  "compatibilityLevel": 1600,
+  "model": {
+    "culture": "en-US",
+    "dataSources": [
+      {
+        "type": "structured",
+        "name": "SQL/DESKTOP-RS9P4A5;NorthWindDWH",
+        "connectionDetails": {
+          "protocol": "tds",
+          "address": {
+            "server": "DESKTOP-RS9P4A5",
+            "database": "NorthWindDWH"
+          },
+          "authentication": null,
+          "query": null
+        },
+        "credential": {
+          "AuthenticationKind": "ServiceAccount",
+          "kind": "SQL",
+          "path": "desktop-rs9p4a5;NorthWindDWH",
+          "EncryptConnection": false
+        }
+      },
+      {
+        "type": "structured",
+        "name": "SQL/ ;NorthWindDWH",
+        "connectionDetails": {
+          "protocol": "tds",
+          "address": {
+            "server": ".",
+            "database": "NorthWindDWH"
+          },
+          "authentication": null,
+          "query": null
+        },
+        "credential": {
+          "AuthenticationKind": "ServiceAccount",
+          "EncryptConnection": false
+        }
+      }
+    ],
+    "tables": [
+      {
+        "name": "DImCustomers",
+        "columns": [
+          {
+            "name": "CustomerID",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "CustomerID"
+          },
+          {
+            "name": "SourceTableKey",
+            "dataType": "string",
+            "sourceColumn": "SourceTableKey"
+          },
+          {
+            "name": "Company Name",
+            "dataType": "string",
+            "sourceColumn": "Company Name"
+          },
+          {
+            "name": "City",
+            "dataType": "string",
+            "sourceColumn": "City"
+          },
+          {
+            "name": "Region",
+            "dataType": "string",
+            "sourceColumn": "Region"
+          },
+          {
+            "name": "Country",
+            "dataType": "string",
+            "sourceColumn": "Country"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/DESKTOP-RS9P4A5;NorthWindDWH\",",
+                "    dbo_DImCustomers = Source{[Schema=\"dbo\",Item=\"DImCustomers\"]}[Data],",
+                "    #\"Added Index\" = Table.AddIndexColumn(dbo_DImCustomers, \"Index\", 1, 1, Int64.Type),",
+                "    #\"Reordered Columns\" = Table.ReorderColumns(#\"Added Index\",{\"Index\", \"Customer ID\", \"Company Name\", \"City\", \"Region\", \"Country\"}),",
+                "    #\"Renamed Columns\" = Table.RenameColumns(#\"Reordered Columns\",{{\"Index\", \"CustomerID\"}, {\"Customer ID\", \"SourceTableKey\"}})",
+                "in",
+                "    #\"Renamed Columns\""
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "DimSupplier",
+        "columns": [
+          {
+            "name": "Supplier ID",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "Supplier ID"
+          },
+          {
+            "name": "Company Name",
+            "dataType": "string",
+            "sourceColumn": "Company Name"
+          },
+          {
+            "name": "City",
+            "dataType": "string",
+            "sourceColumn": "City"
+          },
+          {
+            "name": "Region",
+            "dataType": "string",
+            "sourceColumn": "Region"
+          },
+          {
+            "name": "Country",
+            "dataType": "string",
+            "sourceColumn": "Country"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/DESKTOP-RS9P4A5;NorthWindDWH\",",
+                "    dbo_DimSupplier = Source{[Schema=\"dbo\",Item=\"DimSupplier\"]}[Data]",
+                "in",
+                "    dbo_DimSupplier"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "DimTerritories",
+        "columns": [
+          {
+            "name": "TerritoryID",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "TerritoryID"
+          },
+          {
+            "name": "SourceDataTerritoryKey",
+            "dataType": "string",
+            "sourceColumn": "SourceDataTerritoryKey"
+          },
+          {
+            "name": "Territory ",
+            "dataType": "string",
+            "sourceColumn": "Territory "
+          },
+          {
+            "name": "Region ",
+            "dataType": "string",
+            "sourceColumn": "Region "
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/DESKTOP-RS9P4A5;NorthWindDWH\",",
+                "    dbo_DimTerritories = Source{[Schema=\"dbo\",Item=\"DimTerritories\"]}[Data],",
+                "    #\"Added Index\" = Table.AddIndexColumn(dbo_DimTerritories, \"Index\", 1, 1, Int64.Type),",
+                "    #\"Reordered Columns\" = Table.ReorderColumns(#\"Added Index\",{\"Index\", \"Territory ID\", \"Territory \", \"Region \"}),",
+                "    #\"Renamed Columns\" = Table.RenameColumns(#\"Reordered Columns\",{{\"Index\", \"TerritoryID\"}, {\"Territory ID\", \"SourceDataTerritoryKey\"}})",
+                "in",
+                "    #\"Renamed Columns\""
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "FactNorthwindSalesOrders",
+        "columns": [
+          {
+            "name": "SalesOrdersID",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SalesOrdersID"
+          },
+          {
+            "name": "SourceDataOrderKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SourceDataOrderKey"
+          },
+          {
+            "name": "SourceDataCustomerKey",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "SourceDataCustomerKey"
+          },
+          {
+            "name": "SourceDataEmployeerKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SourceDataEmployeerKey"
+          },
+          {
+            "name": "SourceDataProductKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SourceDataProductKey"
+          },
+          {
+            "name": "SourceDataSupplierKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SourceDataSupplierKey"
+          },
+          {
+            "name": "SourceDataTerritoryKey",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "SourceDataTerritoryKey"
+          },
+          {
+            "name": "SourceDataShipVIAIDKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SourceDataShipVIAIDKey"
+          },
+          {
+            "name": "Order Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Order Date"
+          },
+          {
+            "name": "Required Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Required Date"
+          },
+          {
+            "name": "Shipped Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Shipped Date"
+          },
+          {
+            "name": "Freight",
+            "dataType": "decimal",
+            "sourceColumn": "Freight"
+          },
+          {
+            "name": "Unit Price",
+            "dataType": "decimal",
+            "sourceColumn": "Unit Price"
+          },
+          {
+            "name": "Quantity",
+            "dataType": "int64",
+            "sourceColumn": "Quantity"
+          },
+          {
+            "name": "Discount",
+            "dataType": "double",
+            "sourceColumn": "Discount"
+          },
+          {
+            "name": "Product Name",
+            "dataType": "string",
+            "sourceColumn": "Product Name"
+          },
+          {
+            "name": "Quantity Per Unit",
+            "dataType": "string",
+            "sourceColumn": "Quantity Per Unit"
+          },
+          {
+            "name": "Product Unit Price",
+            "dataType": "decimal",
+            "sourceColumn": "Product Unit Price"
+          },
+          {
+            "name": "UnitsInStock",
+            "dataType": "int64",
+            "sourceColumn": "UnitsInStock"
+          },
+          {
+            "name": "UnitsOnOrder",
+            "dataType": "int64",
+            "sourceColumn": "UnitsOnOrder"
+          },
+          {
+            "name": "ReorderL evel",
+            "dataType": "int64",
+            "sourceColumn": "ReorderL evel"
+          },
+          {
+            "name": "Discontinued",
+            "dataType": "boolean",
+            "sourceColumn": "Discontinued"
+          },
+          {
+            "name": "Region Description",
+            "dataType": "string",
+            "sourceColumn": "Region Description"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/DESKTOP-RS9P4A5;NorthWindDWH\",",
+                "    dbo_FactNorthwindSalesOrders = Source{[Schema=\"dbo\",Item=\"FactNorthwindSalesOrders\"]}[Data],",
+                "    #\"Added Index\" = Table.AddIndexColumn(dbo_FactNorthwindSalesOrders, \"Index\", 1, 1, Int64.Type),",
+                "    #\"Reordered Columns\" = Table.ReorderColumns(#\"Added Index\",{\"Index\", \"Order ID\", \"Customer ID\", \"Employee ID\", \"Order Date\", \"Required Date\", \"Shipped Date\", \"Ship Via\", \"Freight\", \"Product ID\", \"Unit Price\", \"Quantity\", \"Discount\", \"Product Name\", \"Supplier ID\", \"Quantity Per Unit\", \"Product Unit Price\", \"UnitsInStock\", \"UnitsOnOrder\", \"ReorderL evel\", \"Discontinued\", \"Territory ID\", \"Region Description\"}),",
+                "    #\"Renamed Columns\" = Table.RenameColumns(#\"Reordered Columns\",{{\"Index\", \"SalesOrdersID\"}, {\"Order ID\", \"SourceDataOrderKey\"}, {\"Customer ID\", \"SourceDataCustomerKey\"}}),",
+                "    #\"Reordered Columns1\" = Table.ReorderColumns(#\"Renamed Columns\",{\"SalesOrdersID\", \"SourceDataOrderKey\", \"SourceDataCustomerKey\", \"Employee ID\", \"Product ID\", \"Ship Via\", \"Order Date\", \"Required Date\", \"Shipped Date\", \"Freight\", \"Unit Price\", \"Quantity\", \"Discount\", \"Product Name\", \"Supplier ID\", \"Quantity Per Unit\", \"Product Unit Price\", \"UnitsInStock\", \"UnitsOnOrder\", \"ReorderL evel\", \"Discontinued\", \"Territory ID\", \"Region Description\"}),",
+                "    #\"Renamed Columns1\" = Table.RenameColumns(#\"Reordered Columns1\",{{\"Employee ID\", \"SourceDataEmployeerKey\"}, {\"Product ID\", \"SourceDataProductKey\"}}),",
+                "    #\"Reordered Columns2\" = Table.ReorderColumns(#\"Renamed Columns1\",{\"SalesOrdersID\", \"SourceDataOrderKey\", \"SourceDataCustomerKey\", \"SourceDataEmployeerKey\", \"SourceDataProductKey\", \"Supplier ID\", \"Territory ID\", \"Ship Via\", \"Order Date\", \"Required Date\", \"Shipped Date\", \"Freight\", \"Unit Price\", \"Quantity\", \"Discount\", \"Product Name\", \"Quantity Per Unit\", \"Product Unit Price\", \"UnitsInStock\", \"UnitsOnOrder\", \"ReorderL evel\", \"Discontinued\", \"Region Description\"}),",
+                "    #\"Renamed Columns2\" = Table.RenameColumns(#\"Reordered Columns2\",{{\"Supplier ID\", \"SourceDataSupplierKey\"}, {\"Territory ID\", \"SourceDataTerritoryKey\"}, {\"Ship Via\", \"SourceDataShipVIAIDKey\"}})",
+                "in",
+                "    #\"Renamed Columns2\""
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "DimEmployees",
+        "columns": [
+          {
+            "name": "Employee ID",
+            "dataType": "int64",
+            "sourceColumn": "Employee ID"
+          },
+          {
+            "name": "First Name",
+            "dataType": "string",
+            "sourceColumn": "First Name"
+          },
+          {
+            "name": "Birth Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Birth Date"
+          },
+          {
+            "name": "Hire Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Hire Date"
+          },
+          {
+            "name": "Region",
+            "dataType": "string",
+            "sourceColumn": "Region"
+          },
+          {
+            "name": "Reports To",
+            "dataType": "int64",
+            "sourceColumn": "Reports To"
+          },
+          {
+            "name": "Last Name",
+            "dataType": "string",
+            "sourceColumn": "Last Name"
+          },
+          {
+            "name": "City",
+            "dataType": "string",
+            "sourceColumn": "City"
+          },
+          {
+            "name": "Country",
+            "dataType": "string",
+            "sourceColumn": "Country"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/ ;NorthWindDWH\",",
+                "    dbo_DimEmployees = Source{[Schema=\"dbo\",Item=\"DimEmployees\"]}[Data]",
+                "in",
+                "    dbo_DimEmployees"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "DimProducts",
+        "columns": [
+          {
+            "name": "Product ID",
+            "dataType": "int64",
+            "sourceColumn": "Product ID"
+          },
+          {
+            "name": "Product Name",
+            "dataType": "string",
+            "sourceColumn": "Product Name"
+          },
+          {
+            "name": "QuantityPerUnit",
+            "dataType": "string",
+            "sourceColumn": "QuantityPerUnit"
+          },
+          {
+            "name": "Unit Price",
+            "dataType": "decimal",
+            "sourceColumn": "Unit Price"
+          },
+          {
+            "name": "UnitsInStock",
+            "dataType": "int64",
+            "sourceColumn": "UnitsInStock"
+          },
+          {
+            "name": "UnitsOnOrder",
+            "dataType": "int64",
+            "sourceColumn": "UnitsOnOrder"
+          },
+          {
+            "name": "Reorder Level",
+            "dataType": "int64",
+            "sourceColumn": "Reorder Level"
+          },
+          {
+            "name": "Discontinued",
+            "dataType": "boolean",
+            "sourceColumn": "Discontinued"
+          },
+          {
+            "name": "Category Name",
+            "dataType": "string",
+            "sourceColumn": "Category Name"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/ ;NorthWindDWH\",",
+                "    dbo_DimProducts = Source{[Schema=\"dbo\",Item=\"DimProducts\"]}[Data],",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(dbo_DimProducts,{{\"Reorder Level\", Int64.Type}, {\"UnitsOnOrder\", Int64.Type}, {\"UnitsInStock\", Int64.Type}})",
+                "in",
+                "    #\"Changed Type\""
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "DimDate",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "type": "calculatedTableColumn",
+            "name": "Date",
+            "dataType": "dateTime",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "isKey": true,
+            "sourceColumn": "[Date]"
+          },
+          {
+            "type": "calculated",
+            "name": "Year",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "year('DimDate'[Date])"
+          },
+          {
+            "type": "calculated",
+            "name": "Quarter",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": " \"Q\" & QUARTER('DimDate'[Date])"
+          },
+          {
+            "type": "calculated",
+            "name": "Month",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "FORMAT('DimDate'[Date],\"MMMM\")"
+          },
+          {
+            "type": "calculated",
+            "name": "MonthNo",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": " month('DimDate'[Date])"
+          },
+          {
+            "type": "calculated",
+            "name": "WeekNo",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "WEEKNUM('DimDate'[Date],1)"
+          },
+          {
+            "type": "calculated",
+            "name": "Weekday",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "Format('DimDate'[Date],\"DDDD\")"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "CalculatedTable 1",
+            "source": {
+              "type": "calculated",
+              "expression": "CALENDARAUTO()"
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "FiscalYear",
+            "levels": [
+              {
+                "name": "Year",
+                "ordinal": 0,
+                "column": "Year"
+              },
+              {
+                "name": "Quarter",
+                "ordinal": 1,
+                "column": "Quarter"
+              },
+              {
+                "name": "Month",
+                "ordinal": 2,
+                "column": "Month"
+              },
+              {
+                "name": "Weekday",
+                "ordinal": 3,
+                "column": "Weekday"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "aca252f8-c2d4-4e99-bf4b-b49f86c41ea2",
+        "fromTable": "FactNorthwindSalesOrders",
+        "fromColumn": "SourceDataCustomerKey",
+        "toTable": "DImCustomers",
+        "toColumn": "CustomerID"
+      },
+      {
+        "name": "77f72bfa-496d-46d4-8542-093cd211d389",
+        "fromTable": "FactNorthwindSalesOrders",
+        "fromColumn": "SourceDataSupplierKey",
+        "toTable": "DimSupplier",
+        "toColumn": "Supplier ID"
+      },
+      {
+        "name": "77ff87f2-ed39-4b2c-b461-f8b00f583f80",
+        "fromTable": "FactNorthwindSalesOrders",
+        "fromColumn": "SourceDataTerritoryKey",
+        "toTable": "DimTerritories",
+        "toColumn": "TerritoryID"
+      },
+      {
+        "name": "ccb3f113-ad0e-4ebf-b019-72ce788ed8cc",
+        "fromTable": "FactNorthwindSalesOrders",
+        "fromColumn": "SourceDataEmployeerKey",
+        "toTable": "DimEmployees",
+        "toColumn": "Employee ID"
+      },
+      {
+        "name": "64a45bad-06e5-49b1-bb55-69d10851abbd",
+        "fromTable": "FactNorthwindSalesOrders",
+        "fromColumn": "SourceDataProductKey",
+        "toTable": "DimProducts",
+        "toColumn": "Product ID"
+      },
+      {
+        "name": "b9151405-f7c6-446e-9569-296a8df3a653",
+        "fromTable": "FactNorthwindSalesOrders",
+        "fromColumn": "Order Date",
+        "toTable": "DimDate",
+        "toColumn": "Date"
+      }
+    ],
+    "annotations": [
+      {
+        "name": "ClientCompatibilityLevel",
+        "value": "700"
+      }
+    ]
+  },
+  "id": "SemanticModel"
+}
